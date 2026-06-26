@@ -104,13 +104,13 @@
             width: 100%;
             max-width: 850px;
             text-align: justify;
-            text-align-last: justify; 
+            text-align-last: justify !important;
             line-height: 1.8;
         }
 
         /* Nav Items & Interpuncts */
         .nav-item {
-            font-size: clamp(1.4rem, 4vw, 2.6rem); 
+            font-size: clamp(1.7rem, 4vw, 2.6rem); 
             font-weight: 700;
             text-decoration: none;
             color: var(--text-color);
@@ -118,7 +118,7 @@
             filter: blur(var(--blur-amount));
             transition: filter 0.3s ease, color 0.3s ease;
             display: inline;
-            
+            text-align: justify;
             opacity: 0;
             position: relative;
             top: 5px;
