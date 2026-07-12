@@ -278,6 +278,8 @@
             pointer-events: none;
             transition: opacity 0.4s ease;
             padding: 20px;
+            overflow-y: auto; /* tall popups scroll instead of being clipped */
+            -webkit-overflow-scrolling: touch;
         }
 
         .modal-overlay.active {
@@ -290,6 +292,7 @@
             border: 1px solid var(--border-subtle);
             width: 100%;
             max-width: 640px;
+            margin: auto; /* centers when it fits, stays scrollable when taller than the screen */
             padding: 40px 32px 32px 32px;
             position: relative;
             box-shadow: 0 20px 40px var(--shadow-color);
