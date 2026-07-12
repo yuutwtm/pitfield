@@ -8,12 +8,14 @@
     <style>
         /* --- Designed by @pitfieldst on X --- */
         :root {
-            --bg-color: #f7f7f5;       /* Soft, warm off-white */
-            --text-color: #1a1a1a;     /* Deep off-black */
+            --bg-color: #1c1c1a;       /* Dark charcoal, not pitch black */
+            --text-color: #ffffff;     /* White body text */
             --accent-vivid-1: #FF8000; /* McLaren Papaya orange */
             --accent-vivid-2: #47c7fc; /* McLaren blue */
             --accent-vivid-3: #C82504; /* McLaren classic orange */
             --blur-amount: 1.4px;      /* Reduced blur slightly more */
+            --border-subtle: rgba(255, 255, 255, 0.15);
+            --overlay-color: rgba(0, 0, 0, 0.5);
         }
 
         * {
@@ -162,7 +164,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(26, 26, 26, 0.12);
+            background-color: var(--overlay-color);
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
             display: flex;
@@ -182,12 +184,12 @@
 
         .modal-wrapper {
             background-color: var(--bg-color);
-            border: 1px solid rgba(26, 26, 26, 0.1);
+            border: 1px solid var(--border-subtle);
             width: 100%;
             max-width: 640px;
             padding: 40px 32px 32px 32px;
             position: relative;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
             transform: translateY(15px);
             transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
         }
@@ -239,7 +241,7 @@
             height: 0;
             overflow: hidden;
             max-width: 100%;
-            background: #e5e5e0;
+            background: #2a2a28;
             margin-top: 16px;
         }
 
@@ -254,7 +256,7 @@
 
         /* --- Popup Body Text Links --- */
         .modal-body a {
-            color: var(--text-color);       /* Matches your off-black body font */
+            color: var(--text-color);       /* Matches body font color */
             text-decoration: underline;     /* Permanent underline */
             text-decoration-thickness: 1px;
             text-underline-offset: 2px;
