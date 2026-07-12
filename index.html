@@ -14,6 +14,35 @@
             --accent-vivid-2: #47c7fc; /* McLaren blue */
             --accent-vivid-3: #C82504; /* McLaren classic orange */
             --blur-amount: 1.4px;      /* Reduced blur slightly more */
+            --border-subtle: rgba(26, 26, 26, 0.1);
+            --overlay-color: rgba(26, 26, 26, 0.12);
+            --shadow-color: rgba(0, 0, 0, 0.06);
+            --embed-bg: #e5e5e0;
+            --toggle-track: rgba(26, 26, 26, 0.18);
+        }
+
+        /* Dark theme — charcoal, not pitch black; white body text; accents unchanged */
+        :root[data-theme="dark"] {
+            --bg-color: #1c1c1a;
+            --text-color: #ffffff;
+            --border-subtle: rgba(255, 255, 255, 0.15);
+            --overlay-color: rgba(0, 0, 0, 0.5);
+            --shadow-color: rgba(0, 0, 0, 0.4);
+            --embed-bg: #2a2a28;
+            --toggle-track: rgba(255, 255, 255, 0.22);
+        }
+
+        /* Default follows the user's system setting when no explicit choice is made */
+        @media (prefers-color-scheme: dark) {
+            :root:not([data-theme]) {
+                --bg-color: #1c1c1a;
+                --text-color: #ffffff;
+                --border-subtle: rgba(255, 255, 255, 0.15);
+                --overlay-color: rgba(0, 0, 0, 0.5);
+                --shadow-color: rgba(0, 0, 0, 0.4);
+                --embed-bg: #2a2a28;
+                --toggle-track: rgba(255, 255, 255, 0.22);
+            }
         }
 
         * {
@@ -28,6 +57,7 @@
             color: var(--text-color);
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
+            transition: background-color 0.4s ease, color 0.4s ease;
         }
 
         /* --- Landing Screen --- */
@@ -162,7 +192,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(26, 26, 26, 0.12);
+            background-color: var(--overlay-color);
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
             display: flex;
@@ -182,12 +212,12 @@
 
         .modal-wrapper {
             background-color: var(--bg-color);
-            border: 1px solid rgba(26, 26, 26, 0.1);
+            border: 1px solid var(--border-subtle);
             width: 100%;
             max-width: 640px;
             padding: 40px 32px 32px 32px;
             position: relative;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+            box-shadow: 0 20px 40px var(--shadow-color);
             transform: translateY(15px);
             transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
         }
@@ -239,7 +269,7 @@
             height: 0;
             overflow: hidden;
             max-width: 100%;
-            background: #e5e5e0;
+            background: var(--embed-bg);
             margin-top: 16px;
         }
 
@@ -254,7 +284,7 @@
 
         /* --- Popup Body Text Links --- */
         .modal-body a {
-            color: var(--text-color);       /* Matches your off-black body font */
+            color: var(--text-color);       /* Matches body font color */
             text-decoration: underline;     /* Permanent underline */
             text-decoration-thickness: 1px;
             text-underline-offset: 2px;
@@ -270,6 +300,71 @@
 }
 
 
+        /* --- Theme Toggle (iOS-style switch) --- */
+        .theme-toggle {
+            position: fixed;
+            top: 18px;
+            right: 18px;
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            user-select: none;
+        }
+
+        .theme-toggle .toggle-icon {
+            font-size: 0.78rem;
+            line-height: 1;
+            cursor: pointer;
+            opacity: 0.45;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .theme-toggle.is-dark .toggle-icon.moon,
+        .theme-toggle:not(.is-dark) .toggle-icon.sun {
+            opacity: 1;
+            transform: scale(1.12);
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 38px;
+            height: 20px;
+            flex: none;
+            border: none;
+            padding: 0;
+            border-radius: 10px;
+            background: var(--toggle-track);
+            cursor: pointer;
+            transition: background 0.3s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .theme-toggle.is-dark .toggle-switch {
+            background: rgba(255, 128, 0, 0.6); /* McLaren papaya tint when dark is active */
+        }
+
+        .toggle-switch:focus-visible {
+            outline: 2px solid var(--accent-vivid-1);
+            outline-offset: 2px;
+        }
+
+        .toggle-thumb {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #ffffff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .theme-toggle.is-dark .toggle-thumb {
+            transform: translateX(18px);
+        }
+
         @media (max-width: 600px) {
             .links-container {
                 line-height: 1.6;
@@ -278,9 +373,40 @@
                 padding: 32px 20px 20px 20px;
             }
         }
+
+        @media (prefers-reduced-motion: reduce) {
+            body,
+            .toggle-thumb,
+            .toggle-switch,
+            .theme-toggle .toggle-icon {
+                transition: none;
+            }
+        }
     </style>
+    <script>
+        /* Apply saved theme before first paint to avoid a flash.
+           If nothing is saved, no attribute is set and the CSS
+           prefers-color-scheme rule follows the user's system setting. */
+        (function () {
+            try {
+                var saved = localStorage.getItem('theme');
+                if (saved === 'dark' || saved === 'light') {
+                    document.documentElement.setAttribute('data-theme', saved);
+                }
+            } catch (e) {}
+        })();
+    </script>
 </head>
 <body>
+
+    <!-- Theme Toggle: slide toward 🌙 for dark mode, ☀️ for light -->
+    <div class="theme-toggle" id="theme-toggle">
+        <span class="toggle-icon sun" title="Light mode" role="img" aria-label="Light mode">☀️</span>
+        <button class="toggle-switch" role="switch" aria-checked="false" aria-label="Dark mode">
+            <span class="toggle-thumb"></span>
+        </button>
+        <span class="toggle-icon moon" title="Dark mode" role="img" aria-label="Dark mode">🌙</span>
+    </div>
 
     <!-- Landing Screen -->
     <div id="landing-screen">
@@ -345,6 +471,45 @@
 
    
     <script>
+        /* --- Theme toggle --- */
+        (function () {
+            const root = document.documentElement;
+            const toggle = document.getElementById('theme-toggle');
+            if (!toggle) return;
+            const sw = toggle.querySelector('.toggle-switch');
+            const media = window.matchMedia('(prefers-color-scheme: dark)');
+
+            function isDark() {
+                const t = root.getAttribute('data-theme');
+                if (t === 'dark') return true;
+                if (t === 'light') return false;
+                return media.matches; // no explicit choice → follow the system
+            }
+
+            function sync() {
+                const dark = isDark();
+                toggle.classList.toggle('is-dark', dark);
+                sw.setAttribute('aria-checked', dark ? 'true' : 'false');
+            }
+
+            function setTheme(dark) {
+                root.setAttribute('data-theme', dark ? 'dark' : 'light');
+                try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) {}
+                sync();
+            }
+
+            sw.addEventListener('click', () => setTheme(!isDark()));
+            toggle.querySelector('.toggle-icon.moon').addEventListener('click', () => setTheme(true));
+            toggle.querySelector('.toggle-icon.sun').addEventListener('click', () => setTheme(false));
+
+            // Keep following the system while the user hasn't picked a theme
+            media.addEventListener('change', () => {
+                if (!root.getAttribute('data-theme')) sync();
+            });
+
+            sync();
+        })();
+
         const entryInput = document.getElementById('entry-input');
         const landingScreen = document.getElementById('landing-screen');
         const mainContent = document.getElementById('main-content');
