@@ -113,8 +113,10 @@
             pointer-events: none;
 
             /* Responsive scaling */
-            max-width: 100%;
-            overflow-x: hidden;
+    max-width: 100%;
+    overflow-x: hidden;      /* Clips horizontal overflow */
+    box-sizing: border-box;  /* Ensures padding doesn't push width beyond parent */
+    display: inline-block;   /* Tightens width around content */
         }
 
         @media (max-width: 420px) {
