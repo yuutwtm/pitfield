@@ -76,7 +76,7 @@
         /* Center Layout Container with Load Animation */
         .container {
             width: 100%;
-            max-width: 500px;
+            max-width: 420px;
             display: flex;
             flex-direction: column;
             gap: 0.8rem;
@@ -123,18 +123,18 @@
     overflow: hidden;
     transform-origin: center top;
     /* Scales down automatically if screen width is narrower than the ASCII art */
-    zoom: 0.60; /* Fixes layout width for Chrome/Safari */
+    zoom: 0.65; /* Fixes layout width for Chrome/Safari */
 }
 
 /* Fallback for browsers using container query/transform scale */
-@supports not (zoom: 0.60) {
+@supports not (zoom: 0.65) {
     .ascii-art {
         font-size: 5.5px;
         letter-spacing: -1px;
     }
 }
 
-        @media (max-width: 500px) {
+        @media (max-width: 420px) {
             .ascii-art {
                 font-size: 6px;
                 letter-spacing: -1.5px;
